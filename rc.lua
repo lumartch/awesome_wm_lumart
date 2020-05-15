@@ -14,7 +14,14 @@ local beautiful = require("beautiful")
 local naughty = require("naughty")
 local menubar = require("menubar")
 local hotkeys_popup = require("awful.hotkeys_popup")
+-- Variables personalizadas
+-- This is used later as the default terminal and editor to run.
+local terminal = "alacritty"
 local xrandr = require("lumartch/xrandr")
+local terminal_editor = os.getenv("EDITOR") or "nano"
+local gui_editor   = os.getenv("GUI_EDITOR") or "code"
+local freedesktop = require("freedesktop")
+local browser      = os.getenv("BROWSER") or "chromium"
 -- Enable hotkeys help widget for VIM and other apps
 -- when client with a matching name is opened:
 require("awful.hotkeys_popup.keys")
@@ -48,11 +55,6 @@ end
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init("/home/lumartch/.config/awesome/lumartch/theme.lua")
 
--- This is used later as the default terminal and editor to run.
-terminal = "alacritty"
-editor = os.getenv("EDITOR") or "code"
-editor_cmd = "nano"
-
 -- Default modkey.
 -- Usually, Mod4 is the key with a logo between Control and Alt.
 -- If you do not like this or do not have such a key,
@@ -82,22 +84,24 @@ awful.layout.layouts = {
 -- }}}
 
 -- {{{ Menu
--- Create a launcher widget and a main menu
-myawesomemenu = {
-   { "hotkeys", function() hotkeys_popup.show_help(nil, awful.screen.focused()) end },
-   --{ "manual", terminal .. " -e man awesome" },
-   { "edit config", editor_cmd .. " " .. awesome.conffile },
-   { "restart", awesome.restart },
-   { "quit", function() awesome.quit() end },
+local custom_menu = {
+    { "hotkeys", function() return false, hotkeys_popup.show_help end },
+    { "edit config", string.format("%s -e %s %s", terminal, gui_editor, awesome.conffile) },
+    { "restart", awesome.restart },
+    { "quit", function() awesome.quit() end }
 }
 
-mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
-                                    { "open terminal", terminal }
-                                  }
-                        })
-
-mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
-                                     menu = mymainmenu })
+awful.util.mymainmenu = freedesktop.menu.build({
+    icon_size = beautiful.menu_height or dpi(16),
+    before = {
+        { "Awesome", custom_menu, beautiful.awesome_icon },
+        -- other triads can be put here
+    },
+    after = {
+        { "Open terminal", terminal },
+        -- other triads can be put here
+    }
+})
 
 -- Menubar configuration
 menubar.utils.terminal = terminal -- Set the terminal for applications that require it
@@ -263,7 +267,7 @@ awful.key({ modkey,           }, "s",      hotkeys_popup.show_help,
         end,
         {description = "focus previous by index", group = "client"}
     ),
-    awful.key({ modkey,           }, "w", function () mymainmenu:show() end,
+    awful.key({ modkey,           }, "w", function () awful.util.mymainmenu:show() end,
               {description = "show main menu", group = "awesome"}),
     -- Screen Change
     awful.key({ modkey, "Control" }, "c", function() xrandr.xrandr() end),
