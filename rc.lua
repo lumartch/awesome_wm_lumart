@@ -55,6 +55,8 @@ end
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init("/home/lumartch/.config/awesome/lumartch/theme.lua")
 
+--local pulse = require("pulseaudio_widget")
+
 -- Default modkey.
 -- Usually, Mod4 is the key with a logo between Control and Alt.
 -- If you do not like this or do not have such a key,
@@ -278,6 +280,7 @@ globalkeys = gears.table.join(
             {description = "open a terminal", group = "launcher"}),
     awful.key({ modkey }, "p", function() menubar.show() end,
             {description = "show the menubar", group = "launcher"}),
+    -- 
 
     -- Client manipulation
     awful.key({ modkey, "Shift"   }, "Right", function () awful.client.swap.byidx(  1)    end,
@@ -306,7 +309,6 @@ globalkeys = gears.table.join(
         end,
         {description = "focus previous by index", group = "client"}
     ),
-    
     -- Layout manipulation 
     awful.key({ modkey,           }, "l",     function () awful.tag.incmwfact( 0.05)          end,
               {description = "increase master width factor", group = "layout"}),
