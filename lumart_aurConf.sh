@@ -7,4 +7,6 @@ cd ~
 
 aurman -S spotify
 aurman -S whatsapp-nativefier-dark
+aurman -S chromium-widevine
+aurman -S google-chrome-dev
 

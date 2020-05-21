@@ -55,7 +55,8 @@ end
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init("/home/lumartch/.config/awesome/lumartch/theme.lua")
 
---local pulse = require("pulseaudio_widget")
+-- Audio
+local APW = require("apw/widget")
 
 -- Default modkey.
 -- Usually, Mod4 is the key with a logo between Control and Alt.
@@ -249,6 +250,15 @@ root.buttons(gears.table.join(
 
 -- {{{ Key bindings
 globalkeys = gears.table.join(
+    -- Audio
+    awful.key({ }, "XF86AudioRaiseVolume",  APW.Up),
+    awful.key({ }, "XF86AudioLowerVolume",  APW.Down),
+    awful.key({ }, "XF86AudioMute",         APW.ToggleMute),
+    -- Microphone
+    --awful.key({"Shift"}, "XF86AudioRaiseVolume", pulse.volume_up_mic),
+    --awful.key({"Shift"}, "XF86AudioLowerVolume", pulse.volume_down_mic),
+    --awful.key({ }, "XF86MicMute",  pulse.toggle_muted_mic)
+
     -- Awesome manipulation
     awful.key({ modkey,           }, "s",      hotkeys_popup.show_help,
               {description="show help", group="awesome"}),
@@ -308,24 +318,24 @@ globalkeys = gears.table.join(
             awful.client.focus.byidx(-1)
         end,
         {description = "focus previous by index", group = "client"}
-    ),
+    )
     -- Layout manipulation 
-    awful.key({ modkey,           }, "l",     function () awful.tag.incmwfact( 0.05)          end,
-              {description = "increase master width factor", group = "layout"}),
-    awful.key({ modkey,           }, "h",     function () awful.tag.incmwfact(-0.05)          end,
-              {description = "decrease master width factor", group = "layout"}),
-    awful.key({ modkey, "Shift"   }, "h",     function () awful.tag.incnmaster( 1, nil, true) end,
-              {description = "increase the number of master clients", group = "layout"}),
-    awful.key({ modkey, "Shift"   }, "l",     function () awful.tag.incnmaster(-1, nil, true) end,
-              {description = "decrease the number of master clients", group = "layout"}),
-    awful.key({ modkey, "Control" }, "h",     function () awful.tag.incncol( 1, nil, true)    end,
-              {description = "increase the number of columns", group = "layout"}),
-    awful.key({ modkey, "Control" }, "l",     function () awful.tag.incncol(-1, nil, true)    end,
-              {description = "decrease the number of columns", group = "layout"}),
-    awful.key({ modkey,           }, "space", function () awful.layout.inc( 1)                end,
-              {description = "select next", group = "layout"}),
-    awful.key({ modkey, "Shift"   }, "space", function () awful.layout.inc(-1)                end,
-              {description = "select previous", group = "layout"})
+    --awful.key({ modkey,           }, "l",     function () awful.tag.incmwfact( 0.05)          end,
+    --          {description = "increase master width factor", group = "layout"}),
+    --awful.key({ modkey,           }, "h",     function () awful.tag.incmwfact(-0.05)          end,
+    --          {description = "decrease master width factor", group = "layout"}),
+    --awful.key({ modkey, "Shift"   }, "h",     function () awful.tag.incnmaster( 1, nil, true) end,
+    --          {description = "increase the number of master clients", group = "layout"}),
+    --awful.key({ modkey, "Shift"   }, "l",     function () awful.tag.incnmaster(-1, nil, true) end,
+    --          {description = "decrease the number of master clients", group = "layout"}),
+    --awful.key({ modkey, "Control" }, "h",     function () awful.tag.incncol( 1, nil, true)    end,
+    --          {description = "increase the number of columns", group = "layout"}),
+    --awful.key({ modkey, "Control" }, "l",     function () awful.tag.incncol(-1, nil, true)    end,
+    --          {description = "decrease the number of columns", group = "layout"}),
+    --awful.key({ modkey,           }, "space", function () awful.layout.inc( 1)                end,
+    --          {description = "select next", group = "layout"}),
+    --awful.key({ modkey, "Shift"   }, "space", function () awful.layout.inc(-1)                end,
+    --          {description = "select previous", group = "layout"})
     
 )
 
