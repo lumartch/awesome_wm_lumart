@@ -15,13 +15,16 @@ local naughty = require("naughty")
 local menubar = require("menubar")
 local hotkeys_popup = require("awful.hotkeys_popup")
 -- Variables personalizadas
--- This is used later as the default terminal and editor to run.
 local terminal = "alacritty"
 local xrandr = require("lumartch/xrandr")
 local terminal_editor = os.getenv("EDITOR") or "nano"
 local gui_editor   = os.getenv("GUI_EDITOR") or "code"
 local freedesktop = require("freedesktop")
 local browser      = os.getenv("BROWSER") or "chromium"
+-- Widgets
+local spotify_widget = require("widgets/spotify/spotify")
+local volumebar_widget = require("widgets/volume/volumebar")
+local stackoverflow_widget = require("widgets/stackoverflow/stackoverflow")
 -- Enable hotkeys help widget for VIM and other apps
 -- when client with a matching name is opened:
 require("awful.hotkeys_popup.keys")
@@ -55,7 +58,7 @@ end
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init("/home/lumartch/.config/awesome/lumartch/theme.lua")
 
--- Audio
+-- Audio widget
 local APW = require("apw/widget")
 
 -- Default modkey.
@@ -173,6 +176,8 @@ end
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
 screen.connect_signal("property::geometry", set_wallpaper)
 
+--
+
 awful.screen.connect_for_each_screen(function(s)
     -- Wallpaper
     set_wallpaper(s)
@@ -209,7 +214,47 @@ awful.screen.connect_for_each_screen(function(s)
     }
 
     -- Create top the wibox
-    s.mywibox = awful.wibar({ position = "top", screen = s })
+    s.mywibox = awful.wibar({ 
+        osition = "top", 
+        screen = s, layout   = {
+            spacing = 20,
+            spacing_widget = {
+                {
+                    forced_width = 5,
+                    shape        = gears.shape.circle,
+                    widget       = wibox.widget.separator
+                },
+                valign = 'center',
+                halign = 'center',
+                widget = wibox.container.place,
+            },
+            layout  = wibox.layout.flex.horizontal
+        },
+        widget_template = {
+            {
+                {
+                    {
+                        {
+                            id     = 'icon_role',
+                            widget = wibox.widget.imagebox,
+                        },
+                        margins = 2,
+                        widget  = wibox.container.margin,
+                    },
+                    {
+                        id     = 'text_role',
+                        widget = wibox.widget.textbox,
+                    },
+                    layout = wibox.layout.fixed.horizontal,
+                },
+                left  = 10,
+                right = 10,
+                widget = wibox.container.margin
+            },
+            id     = 'background_role',
+            widget = wibox.container.background,
+        },
+    })
 
     -- Add widgets to the wibox
     s.mywibox:setup {
@@ -223,7 +268,20 @@ awful.screen.connect_for_each_screen(function(s)
         awful.widget.tasklist{screen = s}, -- Middle widget
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
-            mykeyboardlayout,
+            --stackoverflow_widget(),
+            spotify_widget({
+                font = 'Ubuntu Mono 9',
+                play_icon = '/usr/share/icons/Papirus-Light/24x24/categories/spotify.svg',
+                pause_icon = '/usr/share/icons/Papirus-Dark/24x24/panel/spotify-indicator.svg'
+             }),
+            volumebar_widget({
+                main_color = '#FFFFFF',
+                mute_color = '#941B0C',
+                width = 50,
+                shape = 'rounded_bar', -- octogon, hexagon, powerline, etc
+                -- bar's height = wibar's height minus 2x margins
+                margins = 8
+            }),
             wibox.widget.systray(),
             mytextclock,
             s.mylayoutbox,
@@ -290,6 +348,8 @@ globalkeys = gears.table.join(
             {description = "open a terminal", group = "launcher"}),
     awful.key({ modkey }, "p", function() menubar.show() end,
             {description = "show the menubar", group = "launcher"}),
+    --awful.key({  }, "Print", function () awful.spawn(terminal.."xfce4-screenshooter") end,
+    --        {description = "show screenshooter tool", group = "launcher"}),
     -- 
 
     -- Client manipulation
