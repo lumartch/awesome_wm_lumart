@@ -23,8 +23,10 @@ local freedesktop = require("freedesktop")
 local browser      = os.getenv("BROWSER") or "chromium"
 -- Widgets
 local spotify_widget = require("widgets/spotify/spotify")
+local spotify_shell = require("widgets/spotify-shell/spotify-shell")
 local volumebar_widget = require("widgets/volume/volumebar")
 local stackoverflow_widget = require("widgets/stackoverflow/stackoverflow")
+local calendar_widget = require("widgets/calendar/calendar")
 -- Enable hotkeys help widget for VIM and other apps
 -- when client with a matching name is opened:
 require("awful.hotkeys_popup.keys")
@@ -120,6 +122,15 @@ mykeyboardlayout = awful.widget.keyboardlayout()
 -- {{{ Wibar
 -- Create a textclock widget
 mytextclock = wibox.widget.textclock()
+local cw = calendar_widget({
+    theme = 'dark',
+    placement = 'top_right'
+})
+mytextclock:connect_signal("button::press", 
+    function(_, _, _, button)
+        if button == 1 then cw.toggle() end
+    end)
+
 
 -- Create a wibox for each screen and add it
 local taglist_buttons = gears.table.join(
@@ -309,13 +320,20 @@ root.buttons(gears.table.join(
 -- {{{ Key bindings
 globalkeys = gears.table.join(
     -- Audio
-    awful.key({ }, "XF86AudioRaiseVolume",  APW.Up),
-    awful.key({ }, "XF86AudioLowerVolume",  APW.Down),
-    awful.key({ }, "XF86AudioMute",         APW.ToggleMute),
+    awful.key({ }, "XF86AudioRaiseVolume",  APW.Up, 
+            {description = "increase global volume", group = "sound"}),
+    awful.key({ }, "XF86AudioLowerVolume",  APW.Down,
+            {description = "decrease global volume", group = "sound"}),
+    awful.key({ }, "XF86AudioMute",         APW.ToggleMute,
+            {description = "mute global volume", group = "sound"}),
     -- Microphone
     --awful.key({"Shift"}, "XF86AudioRaiseVolume", pulse.volume_up_mic),
     --awful.key({"Shift"}, "XF86AudioLowerVolume", pulse.volume_down_mic),
     --awful.key({ }, "XF86MicMute",  pulse.toggle_muted_mic)
+
+    awful.key({ modkey,        }, "d", function () spotify_shell.launch() end, 
+            {description = "spotify shell", group = "music"}),
+    
 
     -- Awesome manipulation
     awful.key({ modkey,           }, "s",      hotkeys_popup.show_help,
