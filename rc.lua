@@ -99,6 +99,7 @@ awful.layout.layouts = {
 -- {{{ Menu
 local custom_menu = {
     { "hotkeys", function() return false, hotkeys_popup.show_help end },
+    { "file manager", string.format("%s -e ranger", terminal) },
     { "edit config", string.format("%s -e %s %s", terminal, gui_editor, awesome.conffile) },
     { "restart", awesome.restart },
     { "quit", function() awesome.quit() end }
@@ -138,43 +139,44 @@ mytextclock:connect_signal("button::press",
 
 -- Create a wibox for each screen and add it
 local taglist_buttons = gears.table.join(
-                    awful.button({ }, 1, function(t) t:view_only() end),
-                    awful.button({ modkey }, 1, function(t)
-                                              if client.focus then
-                                                  client.focus:move_to_tag(t)
-                                              end
-                                          end),
-                    awful.button({ }, 3, awful.tag.viewtoggle),
-                    awful.button({ modkey }, 3, function(t)
-                                              if client.focus then
-                                                  client.focus:toggle_tag(t)
-                                              end
-                                          end),
-                    awful.button({ }, 4, function(t) awful.tag.viewnext(t.screen) end),
-                    awful.button({ }, 5, function(t) awful.tag.viewprev(t.screen) end)
-                )
+        awful.button({ }, 1, function(t) t:view_only() end),
+        awful.button({ modkey }, 1, function(t)
+                                    if client.focus then
+                                        client.focus:move_to_tag(t)
+                                    end
+                                end),
+        awful.button({ }, 3, awful.tag.viewtoggle),
+        awful.button({ modkey }, 3, function(t)
+                                    if client.focus then
+                                        client.focus:toggle_tag(t)
+                                    end
+                                end),
+        awful.button({ }, 4, function(t) awful.tag.viewnext(t.screen) end),
+        awful.button({ }, 5, function(t) awful.tag.viewprev(t.screen) end)
+    )
 
 local tasklist_buttons = gears.table.join(
-                     awful.button({ }, 1, function (c)
-                                              if c == client.focus then
-                                                  c.minimized = true
-                                              else
-                                                  c:emit_signal(
-                                                      "request::activate",
-                                                      "tasklist",
-                                                      {raise = true}
-                                                  )
-                                              end
-                                          end),
-                     awful.button({ }, 3, function()
-                                              awful.menu.client_list({ theme = { width = 250 } })
-                                          end),
-                     awful.button({ }, 4, function ()
-                                              awful.client.focus.byidx(1)
-                                          end),
-                     awful.button({ }, 5, function ()
-                                              awful.client.focus.byidx(-1)
-                                          end))
+    awful.button({ }, 1, function (c)
+            if c == client.focus then
+                c.minimized = true
+            else
+                c:emit_signal(
+                    "request::activate",
+                    "tasklist",
+                    {raise = true}
+                )
+            end
+        end),
+    awful.button({ }, 3, function()
+            awful.menu.client_list({ theme = { width = 250 } })
+        end),
+    awful.button({ }, 4, function ()
+            awful.client.focus.byidx(1)
+        end),
+    awful.button({ }, 5, function ()
+            awful.client.focus.byidx(-1)
+        end)
+    )
 
 local function set_wallpaper(s)
     -- Wallpaper
@@ -339,19 +341,19 @@ globalkeys = gears.table.join(
     awful.key({ }, "XF86AudioPlay", function () 
         awful.util.spawn("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause") 
         end,
-        {description = "play / pause media", group = "sound"}),
+        {description = "play / pause song", group = "music"}),
     awful.key({ }, "XF86AudioNext", function () 
         awful.util.spawn("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next") 
         end,
-        {description = "next media", group = "sound"}),
+        {description = "next song", group = "music"}),
     awful.key({ }, "XF86AudioPrev", function () 
         awful.util.spawn("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous") 
         end,
-        {description = "previous media", group = "sound"}),
+        {description = "previous song", group = "music"}),
     awful.key({ }, "XF86AudioStop", function () 
         awful.util.spawn("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Stop") 
         end,
-        {description = "stop media", group = "sound"}),
+        {description = "stop song", group = "music"}),
     
     -- Microphone
     --awful.key({"Shift"}, "XF86AudioRaiseVolume", pulse.volume_up_mic),
@@ -368,7 +370,7 @@ globalkeys = gears.table.join(
     awful.key({ modkey, "Shift"   }, "q", awesome.quit,
               {description = "quit awesome", group = "awesome"}),
 
-    -- Tag shortcuts
+    -- Tag shortcutsthu
     awful.key({ modkey,           }, "Left",   awful.tag.viewprev,
               {description = "view previous", group = "tag"}),
     awful.key({ modkey,           }, "Right",  awful.tag.viewnext,
@@ -391,6 +393,12 @@ globalkeys = gears.table.join(
             {description = "show the menubar", group = "launcher"}),
     awful.key({  }, "Print", function () awful.spawn("xfce4-screenshooter") end,
             {description = "show screenshooter tool", group = "launcher"}),
+    awful.key({ modkey }, "g", function () awful.spawn("peek") end,
+            {description = "show gif tool", group = "launcher"}),
+    awful.key({ modkey }, "a", function () awful.spawn(string.format("%s -e ranger", terminal)) end,
+           {description = "show terminal file manager", group = "launcher"}),
+    awful.key({ modkey, "Control" }, "a", function () awful.spawn("thunar") end,
+           {description = "show gui file manager", group = "launcher"}),
     -- 
 
     -- Client manipulation
