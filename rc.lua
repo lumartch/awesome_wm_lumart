@@ -24,9 +24,13 @@ local browser      = os.getenv("BROWSER") or "chromium"
 -- Widgets
 local spotify_widget = require("widgets/spotify/spotify")
 local spotify_shell = require("widgets/spotify-shell/spotify-shell")
-local volumebar_widget = require("widgets/volume/volumebar")
+local volumearc_widget = require("widgets/volume/volumearc")
 local stackoverflow_widget = require("widgets/stackoverflow/stackoverflow")
 local calendar_widget = require("widgets/calendar/calendar")
+local cpu_widget = require("widgets/cpu/cpu-widget")
+local battery_widget = require("widgets/battery/battery")
+local ram_widget = require("widgets/ram/ram-widget")
+local run_shell = require("widgets/run-shell/run-shell-3")
 -- Enable hotkeys help widget for VIM and other apps
 -- when client with a matching name is opened:
 require("awful.hotkeys_popup.keys")
@@ -274,27 +278,29 @@ awful.screen.connect_for_each_screen(function(s)
             layout = wibox.layout.fixed.horizontal,
             mylauncher,
             s.mytaglist,
-            s.mypromptbox,
-        },
-        awful.widget.tasklist{screen = s}, -- Middle widget
-        { -- Right widgets
-            layout = wibox.layout.fixed.horizontal,
-            --stackoverflow_widget(),
             spotify_widget({
                 font = 'Ubuntu Mono 9',
                 play_icon = '/usr/share/icons/Papirus-Light/24x24/categories/spotify.svg',
                 pause_icon = '/usr/share/icons/Papirus-Dark/24x24/panel/spotify-indicator.svg'
              }),
-            volumebar_widget({
-                main_color = '#FFFFFF',
-                mute_color = '#941B0C',
-                width = 50,
-                shape = 'rounded_bar', -- octogon, hexagon, powerline, etc
-                -- bar's height = wibar's height minus 2x margins
-                margins = 8
+            volumearc_widget(),
+            s.mypromptbox,
+        },
+        -- Middle widget
+        awful.widget.tasklist{screen = s},
+        { -- Right widgets
+            layout = wibox.layout.fixed.horizontal,
+            --stackoverflow_widget(),
+            ram_widget(),
+            cpu_widget({
+                width = 70,
+                step_width = 2,
+                step_spacing = 0,
+                color = '#434c5e'
             }),
             wibox.widget.systray(),
             mytextclock,
+            battery_widget(),
             s.mylayoutbox,
         },
     }
@@ -326,14 +332,31 @@ globalkeys = gears.table.join(
             {description = "decrease global volume", group = "sound"}),
     awful.key({ }, "XF86AudioMute",         APW.ToggleMute,
             {description = "mute global volume", group = "sound"}),
+
+    -- Media manipulation
+    awful.key({ modkey,        }, "d", function () spotify_shell.launch() end, 
+            {description = "spotify shell", group = "music"}),
+    awful.key({ }, "XF86AudioPlay", function () 
+        awful.util.spawn(terminal.."dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause") 
+        end,
+        {description = "play / pause media", group = "sound"}),
+    awful.key({ }, "XF86AudioNext", function () 
+        awful.util.spawn(terminal.."dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next") 
+        end,
+        {description = "next media", group = "sound"}),
+    awful.key({ }, "XF86AudioPrev", function () 
+        awful.util.spawn(terminal.."dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous") 
+        end,
+        {description = "previous media", group = "sound"}),
+    awful.key({ }, "XF86AudioStop", function () 
+        awful.util.spawn(terminal.."dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Stop") 
+        end,
+        {description = "stop media", group = "sound"}),
+    
     -- Microphone
     --awful.key({"Shift"}, "XF86AudioRaiseVolume", pulse.volume_up_mic),
     --awful.key({"Shift"}, "XF86AudioLowerVolume", pulse.volume_down_mic),
     --awful.key({ }, "XF86MicMute",  pulse.toggle_muted_mic)
-
-    awful.key({ modkey,        }, "d", function () spotify_shell.launch() end, 
-            {description = "spotify shell", group = "music"}),
-    
 
     -- Awesome manipulation
     awful.key({ modkey,           }, "s",      hotkeys_popup.show_help,
@@ -360,7 +383,7 @@ globalkeys = gears.table.join(
               {description = "run gui editor", group = "launcher"}),
     awful.key({ modkey, "Control" }, "c", function() xrandr.xrandr() end,
             {description = "run xrandr auto configurations", group = "launcher"}),
-    awful.key({ modkey },            "r",     function () awful.screen.focused().mypromptbox:run() end,
+    awful.key({ modkey },            "r",     function () run_shell.launch() end,
             {description = "run prompt", group = "launcher"}),
     awful.key({ modkey,           }, "Return", function () awful.spawn(terminal) end,
             {description = "open a terminal", group = "launcher"}),
