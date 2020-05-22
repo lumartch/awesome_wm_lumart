@@ -337,19 +337,19 @@ globalkeys = gears.table.join(
     awful.key({ modkey,        }, "d", function () spotify_shell.launch() end, 
             {description = "spotify shell", group = "music"}),
     awful.key({ }, "XF86AudioPlay", function () 
-        awful.util.spawn(terminal.."dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause") 
+        awful.util.spawn("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause") 
         end,
         {description = "play / pause media", group = "sound"}),
     awful.key({ }, "XF86AudioNext", function () 
-        awful.util.spawn(terminal.."dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next") 
+        awful.util.spawn("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next") 
         end,
         {description = "next media", group = "sound"}),
     awful.key({ }, "XF86AudioPrev", function () 
-        awful.util.spawn(terminal.."dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous") 
+        awful.util.spawn("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous") 
         end,
         {description = "previous media", group = "sound"}),
     awful.key({ }, "XF86AudioStop", function () 
-        awful.util.spawn(terminal.."dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Stop") 
+        awful.util.spawn("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Stop") 
         end,
         {description = "stop media", group = "sound"}),
     
@@ -389,8 +389,8 @@ globalkeys = gears.table.join(
             {description = "open a terminal", group = "launcher"}),
     awful.key({ modkey }, "p", function() menubar.show() end,
             {description = "show the menubar", group = "launcher"}),
-    --awful.key({  }, "Print", function () awful.spawn(terminal.."xfce4-screenshooter") end,
-    --        {description = "show screenshooter tool", group = "launcher"}),
+    awful.key({  }, "Print", function () awful.spawn("xfce4-screenshooter") end,
+            {description = "show screenshooter tool", group = "launcher"}),
     -- 
 
     -- Client manipulation
@@ -578,10 +578,6 @@ awful.rules.rules = {
     { rule_any = {type = { "normal", "dialog" }
       }, properties = { titlebars_enabled = true }
     },
-
-    -- Set Firefox to always map on the tag named "2" on screen 1.
-    -- { rule = { class = "Firefox" },
-    --   properties = { screen = 1, tag = "2" } },
 }
 -- }}}
 
