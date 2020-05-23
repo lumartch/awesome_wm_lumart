@@ -354,6 +354,10 @@ globalkeys = gears.table.join(
         awful.util.spawn("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Stop") 
         end,
         {description = "stop song", group = "music"}),
+    awful.key({ modkey }, "c", function () awful.spawn(string.format("%s -e cmus", terminal)) end,
+        {description = "run cmus player", group = "music"}),
+    awful.key({ modkey, "Shift" }, "s", function () awful.spawn("spotify") end,
+        {description = "run spotify", group = "music"}),
     
     -- Microphone
     --awful.key({"Shift"}, "XF86AudioRaiseVolume", pulse.volume_up_mic),
@@ -392,13 +396,13 @@ globalkeys = gears.table.join(
     awful.key({ modkey }, "p", function() menubar.show() end,
             {description = "show the menubar", group = "launcher"}),
     awful.key({  }, "Print", function () awful.spawn("xfce4-screenshooter") end,
-            {description = "show screenshooter tool", group = "launcher"}),
+            {description = "run screenshooter tool", group = "launcher"}),
     awful.key({ modkey }, "g", function () awful.spawn("peek") end,
-            {description = "show gif tool", group = "launcher"}),
+            {description = "run gif tool", group = "launcher"}),
     awful.key({ modkey }, "a", function () awful.spawn(string.format("%s -e ranger", terminal)) end,
-           {description = "show terminal file manager", group = "launcher"}),
+           {description = "run terminal file manager", group = "launcher"}),
     awful.key({ modkey, "Control" }, "a", function () awful.spawn("thunar") end,
-           {description = "show gui file manager", group = "launcher"}),
+           {description = "run gui file manager", group = "launcher"}),
     -- 
 
     -- Client manipulation

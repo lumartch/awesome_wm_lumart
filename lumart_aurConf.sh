@@ -1,3 +1,5 @@
+#!/bin/bash
+# Script encargado de isntalar las dependencias de repositorios AUR
 cd /tmp
 gpg --recv-key 465022E743D71E39
 git clone https://aur.archlinux.org/aurman.git
