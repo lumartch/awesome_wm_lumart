@@ -3,7 +3,7 @@
 sudo pacman-mirrors -g
 sudo pacman -Syyu
 sudo pacman -S musescore code alacritty opera awesome discord chromium obs-studio steam ranger git xfce4-screenshooter npm dragon 
-sudo pacman -S peek lxappearance xdg-utils ffmpegthumbnailer wildmidi cmus mpv
+sudo pacman -S peek lxappearance xdg-utils ffmpegthumbnailer wildmidi cmus mpv xorg-xbacklight w3m frei0r-plugins
 
 git config --global user.name "LumartCh"
 

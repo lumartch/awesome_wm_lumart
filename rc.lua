@@ -31,6 +31,7 @@ local cpu_widget = require("widgets/cpu/cpu-widget")
 local battery_widget = require("widgets/battery/battery")
 local ram_widget = require("widgets/ram/ram-widget")
 local run_shell = require("widgets/run-shell/run-shell-3")
+local brightness_widget = require("widgets/brightness/brightness")
 -- Enable hotkeys help widget for VIM and other apps
 -- when client with a matching name is opened:
 require("awful.hotkeys_popup.keys")
@@ -292,7 +293,6 @@ awful.screen.connect_for_each_screen(function(s)
         awful.widget.tasklist{screen = s},
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
-            --stackoverflow_widget(),
             ram_widget(),
             cpu_widget({
                 width = 70,
@@ -302,6 +302,11 @@ awful.screen.connect_for_each_screen(function(s)
             }),
             wibox.widget.systray(),
             mytextclock,
+            brightness_widget({
+                get_brightness_cmd = 'xbacklight -get',
+                inc_brightness_cmd = 'xbacklight -inc 5',
+                dec_brightness_cmd = 'xbacklight -dec 5'
+              }),
             battery_widget(),
             s.mylayoutbox,
         },
@@ -335,6 +340,17 @@ globalkeys = gears.table.join(
     awful.key({ }, "XF86AudioMute",         APW.ToggleMute,
             {description = "mute global volume", group = "sound"}),
 
+    -- Microphone
+    --awful.key({"Shift"}, "XF86AudioRaiseVolume", pulse.volume_up_mic),
+    --awful.key({"Shift"}, "XF86AudioLowerVolume", pulse.volume_down_mic),
+    --awful.key({ }, "XF86MicMute",  pulse.toggle_muted_mic)
+
+    -- Screen manipulation
+    awful.key({ }, "XF86MonBrightnessUp", function () awful.spawn("light -A 5") end, 
+            {description = "increase screen brightness", group = "screen"}),
+    awful.key({ }, "XF86MonBrightnessDown", function () awful.spawn("light -U 5") end, 
+            {description = "decrease screen brightness", group = "screen"}),
+
     -- Media manipulation
     awful.key({ modkey,        }, "d", function () spotify_shell.launch() end, 
             {description = "spotify shell", group = "music"}),
@@ -359,10 +375,6 @@ globalkeys = gears.table.join(
     awful.key({ modkey, "Shift" }, "s", function () awful.spawn("spotify") end,
         {description = "run spotify", group = "music"}),
     
-    -- Microphone
-    --awful.key({"Shift"}, "XF86AudioRaiseVolume", pulse.volume_up_mic),
-    --awful.key({"Shift"}, "XF86AudioLowerVolume", pulse.volume_down_mic),
-    --awful.key({ }, "XF86MicMute",  pulse.toggle_muted_mic)
 
     -- Awesome manipulation
     awful.key({ modkey,           }, "s",      hotkeys_popup.show_help,
