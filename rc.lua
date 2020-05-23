@@ -67,7 +67,8 @@ beautiful.init("/home/lumartch/.config/awesome/lumartch/theme.lua")
 
 -- Audio widget
 local APW = require("apw/widget")
-
+--
+local net_widgets = require("widgets/net_widgets")
 -- Default modkey.
 -- Usually, Mod4 is the key with a logo between Control and Alt.
 -- If you do not like this or do not have such a key,
@@ -127,7 +128,7 @@ mykeyboardlayout = awful.widget.keyboardlayout()
 
 -- {{{ Wibar
 -- Create a textclock widget
-mytextclock = wibox.widget.textclock()
+local mytextclock = wibox.widget.textclock("<span font='Terminus 5'> </span>%H:%M ")
 local cw = calendar_widget({
     theme = 'dark',
     placement = 'top_right'
@@ -136,7 +137,6 @@ mytextclock:connect_signal("button::press",
     function(_, _, _, button)
         if button == 1 then cw.toggle() end
     end)
-
 
 -- Create a wibox for each screen and add it
 local taglist_buttons = gears.table.join(
@@ -273,7 +273,7 @@ awful.screen.connect_for_each_screen(function(s)
             widget = wibox.container.background,
         },
     })
-
+    
     -- Add widgets to the wibox
     s.mywibox:setup {
         layout = wibox.layout.align.horizontal,
@@ -286,13 +286,24 @@ awful.screen.connect_for_each_screen(function(s)
                 play_icon = '/usr/share/icons/Papirus-Light/24x24/categories/spotify.svg',
                 pause_icon = '/usr/share/icons/Papirus-Dark/24x24/panel/spotify-indicator.svg'
              }),
-            volumearc_widget(),
             s.mypromptbox,
         },
         -- Middle widget
         awful.widget.tasklist{screen = s},
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
+            net_wireless = net_widgets.wireless({interface   = "wlp3s0", 
+                onclick     = terminal .. " -e sudo wifi-menu" }),
+            net_wired = net_widgets.indicator({
+                timeout     = 5
+            }),
+            net_internet = net_widgets.internet({indent = 0, timeout = 5}),
+            volumearc_widget(),
+            brightness_widget({
+                get_brightness_cmd = 'xbacklight -get',
+                inc_brightness_cmd = 'xbacklight -inc 5',
+                dec_brightness_cmd = 'xbacklight -dec 5'
+              }),
             ram_widget(),
             cpu_widget({
                 width = 70,
@@ -302,11 +313,6 @@ awful.screen.connect_for_each_screen(function(s)
             }),
             wibox.widget.systray(),
             mytextclock,
-            brightness_widget({
-                get_brightness_cmd = 'xbacklight -get',
-                inc_brightness_cmd = 'xbacklight -inc 5',
-                dec_brightness_cmd = 'xbacklight -dec 5'
-              }),
             battery_widget(),
             s.mylayoutbox,
         },
