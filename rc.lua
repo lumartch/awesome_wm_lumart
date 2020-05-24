@@ -68,7 +68,8 @@ beautiful.init("/home/lumartch/.config/awesome/lumartch/theme.lua")
 
 -- Audio widget
 local APW = require("apw/widget")
---
+-- Network Manager applet
+awful.util.spawn("nm-applet")
 local net_widgets = require("widgets/net_widgets")
 -- Default modkey.
 -- Usually, Mod4 is the key with a logo between Control and Alt.
