@@ -12,6 +12,7 @@ local wibox = require("wibox")
 local beautiful = require("beautiful")
 -- Notification library
 local naughty = require("naughty")
+naughty.config.defaults['icon_size'] = 70
 local menubar = require("menubar")
 local hotkeys_popup = require("awful.hotkeys_popup")
 -- Variables personalizadas
