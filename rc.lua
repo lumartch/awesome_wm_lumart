@@ -21,7 +21,7 @@ local xrandr = require("lumartch/xrandr")
 local terminal_editor = os.getenv("EDITOR") or "nano"
 local gui_editor   = os.getenv("GUI_EDITOR") or "code"
 local freedesktop = require("freedesktop")
-local browser      = os.getenv("BROWSER") or "chromium"
+local browser      = os.getenv("BROWSER") or "opera"
 -- Widgets
 local spotify_widget = require("widgets/spotify/spotify")
 local spotify_shell = require("widgets/spotify-shell/spotify-shell")
@@ -67,10 +67,13 @@ end
 beautiful.init("/home/lumartch/.config/awesome/lumartch/theme.lua")
 
 -- Audio widget
+awful.util.spawn("pa-applet")
 local APW = require("apw/widget")
 -- Network Manager applet
 awful.util.spawn("nm-applet")
 local net_widgets = require("widgets/net_widgets")
+
+
 -- Default modkey.
 -- Usually, Mod4 is the key with a logo between Control and Alt.
 -- If you do not like this or do not have such a key,
@@ -300,7 +303,7 @@ awful.screen.connect_for_each_screen(function(s)
                 timeout     = 5
             }),
             net_internet = net_widgets.internet({indent = 0, timeout = 5}),
-            volumearc_widget(),
+            --volumearc_widget(),
             brightness_widget({
                 get_brightness_cmd = 'xbacklight -get',
                 inc_brightness_cmd = 'xbacklight -inc 5',

@@ -1,14 +1,15 @@
 #!/bin/bash
 # Script encargado de isntalar las dependencias de repositorios AUR
-cd /tmp
-gpg --recv-key 465022E743D71E39
-git clone https://aur.archlinux.org/aurman.git
-cd aurman
+git clone https://aur.archlinux.org/snapd.git
+cd snapd
+makepkg -si
+sudo systemctl enable --now snapd.socket
+cd ~
+git clone https://aur.archlinux.org/yay.git
+cd yay
 makepkg -si
 cd ~
-
-aurman -S spotify
-aurman -S whatsapp-nativefier-dark
-aurman -S chromium-widevine
-aurman -S google-chrome-dev
-
+sudo snap install spotify
+sudo snap install whatsdesk
+yay -S chromium-widevine
+yay -S google-chrome
